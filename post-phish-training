@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Security Awareness Training — Piggyvest</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0d1f3c;
+      --mint: #e8f5f0;
+      --mint-border: #d4ece4;
+      --green: #10b981;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+      --amber: #f59e0b;
+      --amber-light: #fffbeb;
+      --text: #0d1f3c;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --bg: #f0f7f4;
+    }
+
+    body {
+      font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      background: var(--navy);
+      padding: 0 40px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-logo { display: flex; align-items: center; gap: 9px; }
+    .topbar-logo-text { font-size: 16px; font-weight: 800; color: #fff; }
+    .topbar-title { font-size: 13px; color: #94a3b8; font-weight: 500; }
+    .topbar-step { font-size: 12px; color: #64748b; }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap { background: #1e3a5f; height: 4px; }
+    .progress-bar { height: 4px; background: var(--green); transition: width 0.4s ease; width: 0%; }
+
+    /* ── SECTIONS ── */
+    .section { display: none; animation: fadeIn 0.35s ease; }
+    .section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--navy);
+      padding: 56px 40px;
+      text-align: center;
+      color: #fff;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(220,38,38,0.2);
+      border: 1px solid rgba(220,38,38,0.4);
+      color: #fca5a5;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 20px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 12px; line-height: 1.2; }
+    .hero h1 span { color: #fca5a5; }
+    .hero p { font-size: 15px; color: #94a3b8; max-width: 480px; margin: 0 auto 32px; line-height: 1.7; }
+    .hero-stats { display: flex; justify-content: center; gap: 32px; margin-bottom: 36px; }
+    .hero-stat { text-align: center; }
+    .hero-stat strong { display: block; font-size: 22px; font-weight: 800; color: #fff; }
+    .hero-stat span { font-size: 12px; color: #64748b; }
+
+    /* ── CONTENT WRAP ── */
+    .content { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ── SECTION HEADER ── */
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--mint);
+      border: 1px solid var(--mint-border);
+      color: #065f46;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+    .section-header h2 { font-size: 24px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+    .section-header p { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+
+    /* ── EMAIL ANNOTATED ── */
+    .email-mock {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .email-mock-header {
+      background: var(--mint);
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--mint-border);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .email-mock-header div { margin-bottom: 3px; }
+    .email-mock-header span { font-weight: 600; color: var(--navy); }
+    .email-mock-header .danger { color: var(--red); }
+    .email-mock-body { padding: 20px; }
+    .email-mock-body p { font-size: 13px; color: #374151; line-height: 1.7; margin-bottom: 10px; }
+
+    /* ── FLAG CALLOUTS ── */
+    .flags { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .flag {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--red);
+      border-radius: 0 10px 10px 0;
+      padding: 14px 16px;
+    }
+    .flag-num {
+      width: 28px;
+      height: 28px;
+      background: var(--red);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .flag-content strong { font-size: 13px; font-weight: 700; color: var(--navy); display: block; margin-bottom: 3px; }
+    .flag-content span { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    /* ── TIP CARDS ── */
+    .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+    .tip-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .tip-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--mint);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+    .tip-card h3 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+    .tip-card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    /* ── REAL VS FAKE ── */
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .compare-card {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.1s;
+      position: relative;
+    }
+    .compare-card:hover { transform: translateY(-2px); }
+    .compare-card.selected-real { border-color: var(--green); }
+    .compare-card.selected-fake { border-color: var(--red); }
+    .compare-card-header {
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .compare-card-header.legit { background: var(--mint); color: #065f46; }
+    .compare-card-header.sus { background: var(--red-light); color: #991b1b; }
+    .compare-card-body { background: #fff; padding: 14px 16px; font-size: 12px; color: #374151; line-height: 1.7; }
+    .compare-card-body .row { margin-bottom: 6px; }
+    .compare-card-body .row strong { color: var(--navy); }
+    .compare-card-body .highlight-red { background: #fee2e2; color: #991b1b; padding: 1px 5px; border-radius: 4px; font-weight: 600; font-size: 11px; }
+    .compare-card-body .highlight-green { background: #d1fae5; color: #065f46; padding: 1px 5px; border-radius: 4px; font-weight: 600; font-size: 11px; }
+    .compare-result { display: none; padding: 14px 16px; font-size: 13px; border-radius: 10px; margin-bottom: 20px; line-height: 1.6; }
+    .compare-result.show { display: block; }
+    .compare-result.correct { background: #f0fdf4; border: 1px solid #86efac; color: #166534; }
+    .compare-result.wrong { background: var(--red-light); border: 1px solid #fecaca; color: #991b1b; }
+
+    /* ── STEPS ── */
+    .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 28px; }
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      width: 40px;
+      height: 40px;
+      background: var(--navy);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-content h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .step-content p { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .step-content .do { color: var(--green); font-weight: 600; }
+    .step-content .dont { color: var(--red); font-weight: 600; }
+
+    /* ── QUIZ ── */
+    .quiz-q { margin-bottom: 28px; }
+    .quiz-q h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 14px; line-height: 1.5; }
+    .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--navy);
+      transition: border-color 0.15s, background 0.15s;
+      font-weight: 500;
+    }
+    .quiz-option:hover { border-color: var(--navy); background: #f9fafb; }
+    .quiz-option.correct { border-color: var(--green); background: #f0fdf4; color: #166534; }
+    .quiz-option.wrong { border-color: var(--red); background: var(--red-light); color: #991b1b; }
+    .quiz-option.disabled { pointer-events: none; opacity: 0.5; }
+    .quiz-option.correct.disabled { opacity: 1; }
+    .quiz-option-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .quiz-option.correct .quiz-option-dot { background: var(--green); border-color: var(--green); }
+    .quiz-option.wrong .quiz-option-dot { background: var(--red); border-color: var(--red); }
+    .quiz-feedback { font-size: 12px; margin-top: 8px; padding: 10px 14px; border-radius: 8px; display: none; line-height: 1.6; }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.correct { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
+    .quiz-feedback.wrong { background: var(--red-light); color: #991b1b; border: 1px solid #fecaca; }
+
+    /* ── COMPLETION ── */
+    .completion {
+      text-align: center;
+      padding: 56px 24px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .completion-ring {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #f0fdf4;
+      border: 3px solid #86efac;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+    }
+    .completion h2 { font-size: 28px; font-weight: 800; color: var(--navy); margin-bottom: 10px; }
+    .completion p { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+    .completion-score {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--mint);
+      border: 1px solid var(--mint-border);
+      color: #065f46;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+    .takeaways {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+    .takeaways h4 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 12px; }
+    .takeaway-item {
+      display: flex;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+    .takeaway-item::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+    /* ── BUTTONS ── */
+    .btn-wrap { display: flex; justify-content: flex-end; margin-top: 32px; gap: 12px; }
+    .btn-next {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-next:hover { background: #1a3460; }
+    .btn-next:active { transform: scale(0.97); }
+    .btn-next:disabled { background: #9ca3af; cursor: not-allowed; transform: none; }
+    .btn-back {
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      padding: 11px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-back:hover { border-color: var(--navy); color: var(--navy); }
+
+    /* ── SCORE FAIL ── */
+    .fail-box {
+      background: var(--red-light);
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      display: none;
+    }
+    .fail-box.show { display: block; }
+    .fail-box h3 { font-size: 16px; font-weight: 700; color: #991b1b; margin-bottom: 6px; }
+    .fail-box p { font-size: 13px; color: #b91c1c; margin-bottom: 14px; }
+    .btn-retry {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      padding: 11px 24px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .tips-grid { grid-template-columns: 1fr; }
+      .compare-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 16px; }
+      .hero h1 { font-size: 24px; }
+      .topbar { padding: 0 16px; }
+      .content { padding: 28px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-logo">
+      <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="8" fill="#1e3a5f"/>
+        <ellipse cx="14" cy="15.5" rx="7" ry="6" fill="#e8f5f0"/>
+        <circle cx="14" cy="13" r="4" fill="#0d1f3c"/>
+        <rect x="12" y="9" width="4" height="5" rx="2" fill="#e8f5f0"/>
+        <circle cx="16.5" cy="15.5" r="1.3" fill="#10b981"/>
+      </svg>
+      <span class="topbar-logo-text">piggyvest</span>
+    </div>
+    <span class="topbar-title">Security Awareness Training</span>
+    <span class="topbar-step" id="step-label">Step 1 of 5</span>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+
+
+  <!-- ══════════════════════════════
+       SECTION 1 — WHAT HAPPENED
+  ══════════════════════════════ -->
+  <div class="section active" id="sec-1">
+    <div class="hero">
+      <div class="hero-badge">You were phished</div>
+      <h1>You clicked a <span>phishing link.</span><br/>Here's what happened.</h1>
+      <p>This was a controlled security test run by your IT team. No real data was compromised. But this training will make sure you're ready next time a real attack comes.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><strong>91%</strong><span>of cyberattacks start<br/>with a phishing email</span></div>
+        <div class="hero-stat"><strong>10 min</strong><span>is all this training<br/>will take</span></div>
+        <div class="hero-stat"><strong>5</strong><span>sections to complete<br/>at your own pace</span></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="section-header">
+        <div class="section-tag">Section 1 of 5</div>
+        <h2>The email you received</h2>
+        <p>Below is the phishing email that was sent to you. Read it carefully — then we'll show you exactly what the red flags were.</p>
+      </div>
+
+      <div class="email-mock">
+        <div class="email-mock-header">
+          <div><span>From:</span> Piggyvest Security Alert &lt;<span class="danger">no-reply@pigqyvest.com</span>&gt;</div>
+          <div><span>Subject:</span> <span class="danger">[Action Required] Unrecognised device detected on your account</span></div>
+        </div>
+        <div class="email-mock-body">
+          <p><strong>Dear Team Member,</strong></p>
+          <p>Our security systems have flagged a login attempt on your Piggyvest work account from a device we do not recognise. To protect your account and workspace, we have temporarily restricted access until your identity is verified.</p>
+          <p>You have <strong>24 hours to verify</strong> — after this window, your account will be locked and IT support will need to manually restore access.</p>
+          <p style="text-align:center;margin:16px 0;">
+            <span style="display:inline-block;background:#0d1f3c;color:#fff;padding:11px 28px;border-radius:100px;font-size:13px;font-weight:700;">Verify My Identity Now</span>
+          </p>
+          <p style="font-size:12px;color:#9ca3af;text-align:center;">This link expires in 24 hours</p>
+        </div>
+      </div>
+
+      <p style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:14px;">Here are the 5 red flags you missed:</p>
+
+      <div class="flags">
+        <div class="flag">
+          <div class="flag-num">1</div>
+          <div class="flag-content">
+            <strong>Fake sender domain — pigqyvest.com</strong>
+            <span>The real Piggyvest domain is piggyvest.com. This email came from pigqyvest.com — notice the "q" instead of "gg". Attackers swap letters to fool you at a glance.</span>
+          </div>
+        </div>
+        <div class="flag">
+          <div class="flag-num">2</div>
+          <div class="flag-content">
+            <strong>Extreme urgency — "24 hours or get locked out"</strong>
+            <span>Legitimate IT teams never threaten immediate lockout to pressure you into acting fast. Urgency is the #1 psychological trick in phishing attacks.</span>
+          </div>
+        </div>
+        <div class="flag">
+          <div class="flag-num">3</div>
+          <div class="flag-content">
+            <strong>Fear tactics — "your account is at risk"</strong>
+            <span>The email is designed to make you panic. When you panic, you stop thinking critically. Real security alerts are calm and factual.</span>
+          </div>
+        </div>
+        <div class="flag">
+          <div class="flag-num">4</div>
+          <div class="flag-content">
+            <strong>Suspicious link — pigqyvest.com/verify-identity</strong>
+            <span>Always hover over a link before clicking to see the real URL. The link went to a fake login page — not the real Piggyvest website.</span>
+          </div>
+        </div>
+        <div class="flag">
+          <div class="flag-num">5</div>
+          <div class="flag-content">
+            <strong>Generic greeting — "Dear Team Member"</strong>
+            <span>Your real IT team knows your name. A generic greeting is a common sign that an email was blasted to many people at once.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-wrap">
+        <button class="btn-next" onclick="goTo(2)">Next: How to spot phishing &#8594;</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════
+       SECTION 2 — HOW TO SPOT IT
+  ══════════════════════════════ -->
+  <div class="section" id="sec-2">
+    <div class="content" style="padding-top:48px;">
+      <div class="section-header">
+        <div class="section-tag">Section 2 of 5</div>
+        <h2>How to spot a phishing email</h2>
+        <p>These are the six rules every Piggyvest staff member should know. Keep these in mind every time you open an email.</p>
+      </div>
+
+      <div class="tips-grid">
+        <div class="tip-card">
+          <div class="tip-icon">&#128270;</div>
+          <h3>Check the sender domain</h3>
+          <p>Always read the full email address, not just the display name. Look for typos like pigqyvest instead of piggyvest.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">&#128279;</div>
+          <h3>Hover before you click</h3>
+          <p>Hover your mouse over any link to see the real URL at the bottom of your screen. If it looks off — don't click.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">&#9201;</div>
+          <h3>Be suspicious of urgency</h3>
+          <p>Phrases like "act now", "24 hours", or "your account will be locked" are pressure tactics designed to stop you thinking.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">&#128274;</div>
+          <h3>Check for HTTPS — but don't rely on it</h3>
+          <p>A padlock doesn't mean a site is safe. Attackers can get SSL certificates too. Always verify the full domain name.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">&#128100;</div>
+          <h3>Notice generic greetings</h3>
+          <p>"Dear Team Member" or "Dear User" instead of your name is a sign the email was sent in bulk to many people.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">&#128222;</div>
+          <h3>Verify through official channels</h3>
+          <p>If an email asks you to take action, call or message IT directly to confirm — before clicking anything.</p>
+        </div>
+      </div>
+
+      <div style="background:var(--amber-light);border:1px solid #fde68a;border-radius:12px;padding:18px 20px;margin-bottom:8px;">
+        <p style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:6px;">&#9888; The golden rule</p>
+        <p style="font-size:13px;color:#b45309;line-height:1.7;">When in doubt — <strong>do not click</strong>. Forward the email to your IT security team at <strong>security@piggyvest.com</strong> and let them verify it for you.</p>
+      </div>
+
+      <div class="btn-wrap">
+        <button class="btn-back" onclick="goTo(1)">&#8592; Back</button>
+        <button class="btn-next" onclick="goTo(3)">Next: Real vs Fake &#8594;</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════
+       SECTION 3 — REAL VS FAKE
+  ══════════════════════════════ -->
+  <div class="section" id="sec-3">
+    <div class="content" style="padding-top:48px;">
+      <div class="section-header">
+        <div class="section-tag">Section 3 of 5</div>
+        <h2>Real vs Fake — spot the difference</h2>
+        <p>Below are two emails. One is a legitimate email from Piggyvest IT. The other is a phishing attempt. Click the one you think is the phishing email.</p>
+      </div>
+
+      <div class="compare-grid" id="compare-grid">
+        <div class="compare-card" id="card-A" onclick="checkCompare('A')">
+          <div class="compare-card-header legit">Email A</div>
+          <div class="compare-card-body">
+            <div class="row"><strong>From:</strong> it-support@<span class="highlight-green">piggyvest.com</span></div>
+            <div class="row"><strong>Subject:</strong> Scheduled system maintenance this Friday</div>
+            <div class="row" style="margin-top:10px;font-size:12px;color:#6b7280;">Hi [First Name], our systems will undergo routine maintenance on Friday 4 April from 11pm–2am. No action is required from you. Regards, Piggyvest IT Team.</div>
+          </div>
+        </div>
+        <div class="compare-card" id="card-B" onclick="checkCompare('B')">
+          <div class="compare-card-header sus">Email B</div>
+          <div class="compare-card-body">
+            <div class="row"><strong>From:</strong> alert@<span class="highlight-red">pigqyvest.com</span></div>
+            <div class="row"><strong>Subject:</strong> [URGENT] Your account will be suspended in 2 hours</div>
+            <div class="row" style="margin-top:10px;font-size:12px;color:#6b7280;">Dear Team Member, suspicious activity was detected. Click immediately to verify or lose access. This link expires in 2 hours.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-result" id="compare-result"></div>
+
+      <div class="btn-wrap">
+        <button class="btn-back" onclick="goTo(2)">&#8592; Back</button>
+        <button class="btn-next" id="btn-sec3-next" onclick="goTo(4)" disabled>Next: What to do next time &#8594;</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════
+       SECTION 4 — WHAT TO DO
+  ══════════════════════════════ -->
+  <div class="section" id="sec-4">
+    <div class="content" style="padding-top:48px;">
+      <div class="section-header">
+        <div class="section-tag">Section 4 of 5</div>
+        <h2>What to do next time</h2>
+        <p>If you receive a suspicious email, follow these three steps — in order, every time.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Stop — do not click anything</h3>
+            <p><span class="dont">Don't click links.</span> <span class="dont">Don't download attachments.</span> <span class="dont">Don't reply.</span> Even clicking "unsubscribe" in a phishing email can confirm your address is active to attackers.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Forward it to IT security</h3>
+            <p><span class="do">Do forward the email</span> to <strong>security@piggyvest.com</strong> with the subject "Suspected Phishing". Our IT team will investigate and alert others if needed. You will never be penalised for reporting.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>If you already clicked — report immediately</h3>
+            <p>If you already clicked a link or entered credentials, <span class="dont">do not wait.</span> <span class="do">Contact IT immediately</span> via Slack or call the IT helpdesk. The faster we know, the faster we can contain it. There is no shame in reporting — it helps protect everyone.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--mint);border:1px solid var(--mint-border);border-radius:12px;padding:18px 20px;margin-bottom:8px;">
+        <p style="font-size:13px;font-weight:700;color:#065f46;margin-bottom:4px;">IT Security Contact</p>
+        <p style="font-size:13px;color:#047857;line-height:1.7;">Email: <strong>security@piggyvest.com</strong><br/>Slack: <strong>#it-security-alerts</strong><br/>Available 24/7 for security incidents.</p>
+      </div>
+
+      <div class="btn-wrap">
+        <button class="btn-back" onclick="goTo(3)">&#8592; Back</button>
+        <button class="btn-next" onclick="goTo(5)">Next: Final quiz &#8594;</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════
+       SECTION 5 — QUIZ
+  ══════════════════════════════ -->
+  <div class="section" id="sec-5">
+    <div class="content" style="padding-top:48px;">
+      <div class="section-header">
+        <div class="section-tag">Section 5 of 5</div>
+        <h2>Quick knowledge check</h2>
+        <p>Answer all 4 questions. You need at least 3 correct to complete the training. Take your time.</p>
+      </div>
+
+      <!-- Q1 -->
+      <div class="quiz-q" id="q1">
+        <h3>1. You receive an urgent email saying your account will be locked in 1 hour. What should you do first?</h3>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="answer(1, this, false)"><div class="quiz-option-dot"></div>Click the link immediately to avoid being locked out</div>
+          <div class="quiz-option" onclick="answer(1, this, false)"><div class="quiz-option-dot"></div>Reply to the email asking if it's legitimate</div>
+          <div class="quiz-option" onclick="answer(1, this, true)"><div class="quiz-option-dot"></div>Do not click — verify by contacting IT directly</div>
+          <div class="quiz-option" onclick="answer(1, this, false)"><div class="quiz-option-dot"></div>Forward it to a colleague to check</div>
+        </div>
+        <div class="quiz-feedback" id="fb1"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="quiz-q" id="q2">
+        <h3>2. Which of these sender addresses is most suspicious?</h3>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="answer(2, this, false)"><div class="quiz-option-dot"></div>it-support@piggyvest.com</div>
+          <div class="quiz-option" onclick="answer(2, this, true)"><div class="quiz-option-dot"></div>security-alert@pigqyvest.com</div>
+          <div class="quiz-option" onclick="answer(2, this, false)"><div class="quiz-option-dot"></div>hr@piggyvest.com</div>
+          <div class="quiz-option" onclick="answer(2, this, false)"><div class="quiz-option-dot"></div>noreply@piggyvest.com</div>
+        </div>
+        <div class="quiz-feedback" id="fb2"></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="quiz-q" id="q3">
+        <h3>3. A link in an email shows the text "piggyvest.com/login" but when you hover over it, it shows "pigqyvest.com/login". What does this mean?</h3>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="answer(3, this, false)"><div class="quiz-option-dot"></div>It's fine — display text and URLs are often different</div>
+          <div class="quiz-option" onclick="answer(3, this, true)"><div class="quiz-option-dot"></div>It's a phishing link — the real destination is a fake site</div>
+          <div class="quiz-option" onclick="answer(3, this, false)"><div class="quiz-option-dot"></div>It means the link has expired</div>
+          <div class="quiz-option" onclick="answer(3, this, false)"><div class="quiz-option-dot"></div>It's a redirect — still safe to click</div>
+        </div>
+        <div class="quiz-feedback" id="fb3"></div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="quiz-q" id="q4">
+        <h3>4. You accidentally clicked a phishing link and entered your password. What should you do?</h3>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="answer(4, this, false)"><div class="quiz-option-dot"></div>Wait and see if anything bad happens</div>
+          <div class="quiz-option" onclick="answer(4, this, false)"><div class="quiz-option-dot"></div>Delete the email and hope for the best</div>
+          <div class="quiz-option" onclick="answer(4, this, false)"><div class="quiz-option-dot"></div>Tell a colleague but don't bother IT</div>
+          <div class="quiz-option" onclick="answer(4, this, true)"><div class="quiz-option-dot"></div>Contact IT immediately and change your password now</div>
+        </div>
+        <div class="quiz-feedback" id="fb4"></div>
+      </div>
+
+      <div class="fail-box" id="fail-box">
+        <h3>Not quite — let's try again</h3>
+        <p>You scored <span id="fail-score"></span>/4. You need at least 3 correct to pass. Review the sections and give it another go.</p>
+        <button class="btn-retry" onclick="retryQuiz()">Retry Quiz</button>
+      </div>
+
+      <div class="btn-wrap">
+        <button class="btn-back" onclick="goTo(4)">&#8592; Back</button>
+        <button class="btn-next" id="btn-submit" onclick="submitQuiz()" disabled>Submit answers</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════
+       SECTION 6 — COMPLETION
+  ══════════════════════════════ -->
+  <div class="section" id="sec-6">
+    <div class="content">
+      <div class="completion">
+        <div class="completion-ring">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="19" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+            <path d="M11 20l7 7 12-12" stroke="#16a34a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2>Training complete!</h2>
+        <p>Well done. You've completed the Piggyvest Security Awareness Training. You're now better equipped to spot and report phishing attacks.</p>
+        <div class="completion-score">&#127942; Score: <span id="final-score">4</span>/4 correct</div>
+
+        <div class="takeaways">
+          <h4>Your key takeaways</h4>
+          <div class="takeaway-item">Always check the sender domain carefully for subtle typos</div>
+          <div class="takeaway-item">Hover over links before clicking to reveal the real URL</div>
+          <div class="takeaway-item">Urgency and fear in emails are red flags, not reasons to rush</div>
+          <div class="takeaway-item">When in doubt, contact IT — never click first</div>
+          <div class="takeaway-item">If you clicked something suspicious, report it immediately</div>
+        </div>
+
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;">Your completion has been recorded. The IT security team may run further simulations in the future — stay sharp! If you have any questions, reach out to <strong>security@piggyvest.com</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    const TOTAL = 5;
+    let quizAnswers = { 1: null, 2: null, 3: null, 4: null };
+    let quizScore = 0;
+    let compareAnswered = false;
+
+    const feedbacks = {
+      1: { c: "Correct! Never act on urgency alone. Always verify with IT directly before clicking anything.", w: "Not quite. The right move is always to verify with IT first — never click a link just because an email says you must." },
+      2: { c: "Correct! pigqyvest.com has a 'q' instead of 'gg' — a classic typosquat domain designed to look like the real thing.", w: "Look more carefully at the domain name. pigqyvest.com uses a 'q' instead of 'gg' — it's a fake domain." },
+      3: { c: "Correct! The hover URL is the real destination. If it's different from the display text and looks suspicious — it's a phishing link.", w: "When the hover URL differs from the display text and uses a suspicious domain, it's always a phishing link. Never trust the display text alone." },
+      4: { c: "Correct! Speed is critical. Contact IT immediately to lock the account and change your password right away.", w: "Waiting is dangerous. The moment you suspect a compromise, contact IT and change your password immediately." }
+    };
+
+    function goTo(n) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('sec-' + n).classList.add('active');
+      const label = n <= 5 ? 'Step ' + n + ' of 5' : 'Complete';
+      document.getElementById('step-label').textContent = label;
+      const pct = n === 6 ? 100 : ((n - 1) / TOTAL) * 100;
+      document.getElementById('progress-bar').style.width = pct + '%';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function checkCompare(choice) {
+      if (compareAnswered) return;
+      compareAnswered = true;
+      const result = document.getElementById('compare-result');
+      const cardA = document.getElementById('card-A');
+      const cardB = document.getElementById('card-B');
+      cardA.onclick = null; cardB.onclick = null;
+      if (choice === 'B') {
+        cardB.classList.add('selected-fake');
+        result.className = 'compare-result show correct';
+        result.innerHTML = '<strong>Correct!</strong> Email B is the phishing attempt. The fake domain (pigqyvest.com), the ALL CAPS urgency in the subject line, the 2-hour pressure window, and the generic greeting are all classic phishing red flags. Email A is a legitimate IT notice — calm, uses your name format, and comes from the real domain.';
+      } else {
+        cardA.classList.add('selected-real');
+        cardB.classList.add('selected-fake');
+        result.className = 'compare-result show wrong';
+        result.innerHTML = '<strong>Not quite.</strong> Email A is actually legitimate — it uses the real piggyvest.com domain, addresses you properly, and makes no urgent demands. Email B is the phishing attempt — spot the fake domain (pigqyvest.com), the extreme urgency, and the generic greeting.';
+      }
+      document.getElementById('btn-sec3-next').disabled = false;
+    }
+
+    function answer(qNum, el, isCorrect) {
+      if (quizAnswers[qNum] !== null) return;
+      quizAnswers[qNum] = isCorrect;
+      const opts = el.closest('.quiz-options').querySelectorAll('.quiz-option');
+      opts.forEach(o => o.classList.add('disabled'));
+      el.classList.add(isCorrect ? 'correct' : 'wrong');
+      if (!isCorrect) {
+        opts.forEach(o => {
+          if (o.onclick && o.getAttribute('onclick') && o !== el) {
+            o.classList.remove('disabled');
+          }
+        });
+        // highlight correct
+        opts.forEach(o => {
+          if (o.textContent.trim() === getCorrectText(qNum)) o.classList.add('correct');
+        });
+      }
+      const fb = document.getElementById('fb' + qNum);
+      fb.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'wrong');
+      fb.textContent = isCorrect ? feedbacks[qNum].c : feedbacks[qNum].w;
+
+      const allAnswered = Object.values(quizAnswers).every(v => v !== null);
+      if (allAnswered) document.getElementById('btn-submit').disabled = false;
+    }
+
+    function getCorrectText(qNum) {
+      const opts = document.getElementById('q' + qNum).querySelectorAll('.quiz-option');
+      for (let o of opts) {
+        if (o.getAttribute('onclick') && o.getAttribute('onclick').includes('true')) return o.textContent.trim();
+      }
+      return '';
+    }
+
+    function submitQuiz() {
+      quizScore = Object.values(quizAnswers).filter(Boolean).length;
+      document.getElementById('btn-submit').disabled = true;
+      if (quizScore >= 3) {
+        document.getElementById('final-score').textContent = quizScore;
+        goTo(6);
+      } else {
+        document.getElementById('fail-score').textContent = quizScore;
+        document.getElementById('fail-box').classList.add('show');
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }
+    }
+
+    function retryQuiz() {
+      quizAnswers = { 1: null, 2: null, 3: null, 4: null };
+      quizScore = 0;
+      document.getElementById('fail-box').classList.remove('show');
+      document.getElementById('btn-submit').disabled = true;
+      [1,2,3,4].forEach(q => {
+        const opts = document.getElementById('q' + q).querySelectorAll('.quiz-option');
+        opts.forEach(o => { o.classList.remove('correct','wrong','disabled'); });
+        const fb = document.getElementById('fb' + q);
+        fb.className = 'quiz-feedback';
+        fb.textContent = '';
+      });
+    }
+  </script>
+
+</body>
+</html>
